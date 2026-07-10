@@ -1,0 +1,42 @@
+.input-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+input {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  background-color: #ffffff;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+}
+
+.add-btn {
+  background-color: #0f172a;
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.add-btn:hover {
+  background-color: #1e293b;
+  transform: translateY(-1px);
+}
+
+.add-btn:active {
+  transform: translateY(0);
+}
