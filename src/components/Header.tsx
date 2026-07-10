@@ -1,7 +1,7 @@
 function Header(){
     return (
         <header>
-            <t1>Administrador de tareas</t1>
+            <h1>Administrador de tareas</h1>
             <p>Mi primera aplicación con React</p>
         </header>
     );
