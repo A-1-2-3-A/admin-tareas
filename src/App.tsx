@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import TaskList from "./components/TaskList";
@@ -12,37 +12,64 @@ type Task = {
 };
 
 function App() {
-    const [tasks, setTasks] = useState<Task[]>([
-        { id: 1, text: "1", completed: false },
-        { id: 2, text: "2", completed: false },
-        { id: 3, text: "3", completed: false }
-    ]);
+    const [tasks, setTasks] = useState<Task[]>([]);
+    useEffect(() => {
+        const fetchTasks = async () => {
+            const response = await fetch("http://localhost:3000/tasks");
+            const data = await response.json();
+            setTasks(data);
+        }
 
-    const addTask = (text: string) => {
-        const newTask: Task = {
-            id: Date.now(),
-            text: text,
-            completed: false
-        };
+        fetchTasks();
+    }, []);
 
+
+    const addTask = async(text: string) => {
+        const response = await fetch("http://localhost:3000/tasks", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: text
+            })
+        });
+
+        const newTask = await response.json();
+        
         setTasks([...tasks, newTask]);
     };
 
-    const deleteTask = (id: number) => {
-        const updateTasks = tasks.filter((task) => task.id !== id);
+    const deleteTask = async(id: number) => {
+        await fetch(`http://localhost:3000/tasks/${id}`, {
+            method: "DELETE"
+        });
+        
+        const response = await fetch("http://localhost:3000/tasks");
+        const updateTasks = await response.json();
+
         setTasks(updateTasks);
     }
 
-    const toggleTask = (id: number) => {
-        const updateTasks = tasks.map((task) => {
-            if (task.id === id) {
-                return {
-                    ...task,
-                    completed: !task.completed
-                };
-            }
-            return task;
+    const toggleTask = async(id: number) => {
+        const task = tasks.find((task) => task.id === id);
+
+        if (!task) {
+            return ;
+        }
+        
+        await fetch(`http://localhost:3000/tasks/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                completed: !task.completed
+            })
         });
+
+        const response = await fetch("http://localhost:3000/tasks");
+        const updateTasks = await response.json();
 
         setTasks(updateTasks);
     }

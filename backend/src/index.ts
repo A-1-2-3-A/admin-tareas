@@ -1,11 +1,15 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
+const cors = require("cors");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 const PORT = 3000;
 
 const prisma = new PrismaClient();
 
+app.use(cors());
 app.use(express.json());
 
 type Task = {
@@ -22,6 +26,114 @@ const tasks: Task[] = [
 
 app.get("/", (req: any, res: any) => {
     res.send("Servidor funcionando");
+});
+
+app.post("/login", async(req: any, res: any) => {
+    const { email, password } = req.body || {};
+
+    if (!email || !password) {
+        return res.status(401).json({
+            message: "Email and password are required"
+        });
+    }
+
+    const user = await prisma.user.findUnique({
+        where : { email: email }
+    });
+
+    if (!user) {
+        return res.status(401).json({
+            message: "Invalid credentials"
+        });
+    }
+
+    const passwordIsInvalid = await bcrypt.compare(password, user.password)
+
+    if (!passwordIsInvalid) {
+        return res.status(401).json({
+            message: "Invalid credentials"
+        });
+    }
+
+    const token = jwt.sign(
+        { id: user.id, email: user.email },
+        "secret_key",
+        { expiresIn: "1h" }
+    );
+
+    res.json({
+        message: "Login successful",
+        token: token,
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        }
+    })
+});
+
+app.get("/profile", (req: any, res: any) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).json({
+            message: "No token provided"
+        });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try{
+        const decoded = jwt.verify(token, "secret_key");
+
+        res.json({
+            message: "Protected profile data",
+            user: decoded
+        });
+    } catch (error) {
+        res.status(401).json({
+            message: "Invalid token"
+        });
+    }
+});
+
+app.post("/register", async(req: any, res: any) => {
+    const { name, email, password } = req.body || {}
+
+    if (!name || !email || !password) {
+        return res.status(401).json({
+            message: "Name, email and password are required"
+        });
+    }
+
+    const existingUser = await prisma.user.findUnique({
+        where: { email: email }
+    });
+
+    if (existingUser) {
+        return res.status(401).json({
+            message: "User alredy exists"
+        });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await prisma.user.create({
+        data: {
+            name: name,
+            email: email,
+            password: hashedPassword
+        }
+    })
+
+    res.status(201).json({
+        message: "User registered successfully",
+        user: {
+            name: name,
+            email: email,
+            password: hashedPassword
+        }
+    });
 });
 
 app.get("/tasks", async (req: any, res: any) => {
