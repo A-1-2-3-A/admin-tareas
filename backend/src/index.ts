@@ -72,7 +72,8 @@ app.post("/login", async(req: any, res: any) => {
     })
 });
 
-app.get("/profile", (req: any, res: any) => {
+// Antiguo /profile, ahora funciona como protector de rutas seguras
+const authenticateToken = (req: any, res: any, next: any) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -85,17 +86,14 @@ app.get("/profile", (req: any, res: any) => {
 
     try{
         const decoded = jwt.verify(token, "secret_key");
-
-        res.json({
-            message: "Protected profile data",
-            user: decoded
-        });
+        req.user = decoded;
+        next();
     } catch (error) {
         res.status(401).json({
             message: "Invalid token"
         });
     }
-});
+};
 
 app.post("/register", async(req: any, res: any) => {
     const { name, email, password } = req.body || {}
@@ -136,12 +134,12 @@ app.post("/register", async(req: any, res: any) => {
     });
 });
 
-app.get("/tasks", async (req: any, res: any) => {
+app.get("/tasks", authenticateToken, async (req: any, res: any) => {
     const tasksFromDatabase = await prisma.task.findMany();
     res.json(tasksFromDatabase);
 });
 
-app.post("/tasks", async (req: any, res: any) => {
+app.post("/tasks", authenticateToken, async (req: any, res: any) => {
     const { text } = req.body;
 
     if (!text || text.trim() === "") {
@@ -160,7 +158,7 @@ app.post("/tasks", async (req: any, res: any) => {
     res.status(201).json(newTask);
 });
 
-app.put("/tasks/:id", async (req: any, res: any) => {
+app.put("/tasks/:id", authenticateToken, async (req: any, res: any) => {
     const id = Number(req.params.id);
     const { text, completed } = req.body;
 
@@ -185,7 +183,7 @@ app.put("/tasks/:id", async (req: any, res: any) => {
     res.json(updatedTask);
 });
 
-app.delete("/tasks/:id", async (req: any, res: any) => {
+app.delete("/tasks/:id", authenticateToken, async (req: any, res: any) => {
     const id = Number(req.params.id);
 
     const task = await prisma.task.findUnique({
