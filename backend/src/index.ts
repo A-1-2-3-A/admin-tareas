@@ -18,6 +18,8 @@ type Task = {
     completed: boolean;
 }
 
+// La lista no tiene sentido actualmente. Se usa como prueba para visualización ante falta de BdD
+
 const tasks: Task[] = [
     { id: 1, text: "Estudiar Node.js", completed: false },
     { id: 2, text: "Crear servidor express", completed: true },
