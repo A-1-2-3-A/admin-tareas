@@ -33,4 +33,4 @@ DATABASE_URL="postgresql://usuario:password@localhost:5432/admin_tareas"
 ## 🗄️ Base de datos
 
 PostgreSQL con migraciones y seeds gestionados
-con Prisma (ver Módulo 2)
+con Prisma (ver Módulo 2)# prueba de proteccion
