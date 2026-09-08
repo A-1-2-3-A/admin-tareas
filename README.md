@@ -2,7 +2,7 @@
 
 Administra una lista de tareas estructurada en memoria y con credenciales fijas, con usuarios reales almacenados en base de datos, contraseñas cifradas y endpoints protegidos por un middleware de control de acceso.
 
-<!-- BADGE_CI -->
+[![CI](https://github.com/A-1-2-3-A/admin-tareas/actions/workflows/ci.yml/badge.svg)](https://github.com/A-1-2-3-A/admin-tareas/actions/workflows/ci.yml)
 
 ## 🚀 Instalación local
 
@@ -32,5 +32,4 @@ DATABASE_URL="postgresql://usuario:password@localhost:5432/admin_tareas"
 
 ## 🗄️ Base de datos
 
-PostgreSQL con migraciones y seeds gestionados
-con Prisma (ver Módulo 2)# prueba de proteccion
+PostgreSQL con migraciones y seeds gestionados con Prisma (ver Módulo 2)# prueba de proteccion
