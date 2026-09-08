@@ -132,7 +132,7 @@ function App() {
                 pending={pendingTasks}
             />
         </div>
-    
+    );
 }
 
 export default App;
