@@ -33,6 +33,8 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+      - run: npm ci
+        working-directory: backend
       - run: npx vitest run --coverage
 
   e2e:
