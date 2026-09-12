@@ -22,13 +22,14 @@ function TaskInput(props: TaskImputProps){
         <div className="input-container">
             <input 
                 type="text"
+                aria-label="Nueva tarea"
                 placeholder="Escriba una nueva tarea"
                 value={text}
                 onChange={(event) => setText(event.target.value)}
                 onKeyDown={(event) => event.key === 'Enter' && handleSubmit()}
             />
 
-            <button onClick={handleSubmit} className="add-btn">
+            <button onClick={handleSubmit} className="add-btn" aria-label="Agregar">
                 <Plus size={20} />
             </button>
         </div>
