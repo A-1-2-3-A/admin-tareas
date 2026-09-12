@@ -46,6 +46,24 @@ jobs:
     name: Pruebas E2E
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U test -d testdb"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/testdb
+
     steps:
       - uses: actions/checkout@v4
 
@@ -55,5 +73,11 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+      - run: npm ci
+        working-directory: backend
+      - run: npx prisma generate
+        working-directory: backend
+      - run: npx prisma db push
+        working-directory: backend
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test
