@@ -17,7 +17,7 @@ describe('API de tareas', () => {
             .post('/login')
             .send({})
 
-        expect(res.status).toBe(400)
+        expect(res.status).toBe(401)
         expect(res.body.message).toBe('Email and password are required')
     })
 
