@@ -1,3 +1,4 @@
+/* global process */
 import request from 'supertest'
 import { describe, it, expect } from 'vitest'
 import jwt from 'jsonwebtoken'
@@ -88,7 +89,7 @@ describe('API de tareas', () => {
                 id: 1,
                 email: 'test@test.com'
             },
-            'secret_key',
+            process.env.JWT_SECRET,
             {
                 expiresIn: '1h'
             }
@@ -111,7 +112,7 @@ describe('API de tareas', () => {
                 id: 1,
                 email: 'test@test.com'
             },
-            'secret_key',
+            process.env.JWT_SECRET,
             {
                 expiresIn: '1h'
             }
