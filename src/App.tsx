@@ -120,6 +120,9 @@ function App() {
     return (
         <div className="app-container">
             <Header onLogout={handleLogout} />
+            <div className="verification-banner">
+                Verificación final del sistema CI/CD
+            </div>
             <TaskInput onAddTask={addTask} />
             <TaskList
                 tasks={tasks}
